@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>Interactive_Map_WindowsApplication</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="Mapsui.Wpf" Version="5.0.0-beta.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="ProjNet" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Interactive-Map-Navigation\Interactive-Map-Navigation.csproj" />
+    <ProjectReference Include="..\Interactive-Map.Application\Interactive-Map.Application.csproj" />
+    <ProjectReference Include="..\Interactive-Map.Infrastructure\Interactive-Map.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
