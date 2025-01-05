@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Interactive_Map.WebScraper.MapGenieData;
+using Interactive_Map.MapGenie.MapGenieData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Interactive_Map.WebScraper
+namespace Interactive_Map.MapGenie
 {
     public class MapGenieMap
     {
@@ -20,14 +20,13 @@ namespace Interactive_Map.WebScraper
             return cards.Select(x => new MapGenieMap(x)).ToList();
         }
 
-        private static IReadOnlyCollection<MapGenieMap> FromScript(HtmlDocument doc, string link)
+        private static IReadOnlyCollection<MapGenieMap>? FromScript(HtmlDocument doc, string link)
         {
             var mapData = doc.ScrapScript();
-            if (mapData is null) throw new Exception(nameof(mapData));
-            return mapData.Maps.Select(x => new MapGenieMap(x, link)).ToList();
+            return mapData?.Maps.Select(x => new MapGenieMap(x, link)).ToList();
         }
 
-        public static async Task<IReadOnlyCollection<MapGenieMap>> GetAll(MapGenieGame game)
+        public static async Task<IReadOnlyCollection<MapGenieMap>?> GetAll(MapGenieGame game)
         {
             var doc = await _web.LoadFromWebAsync(game.Link);
             return FromCards(doc) ?? FromScript(doc, game.Link);
@@ -39,10 +38,11 @@ namespace Interactive_Map.WebScraper
             return maps.First(select);
         }
 
-        public async Task<MapGenieMapData> GetMapData()
+        public async Task<MapGenieMapData?> GetMapData()
         {
             var doc = await _web.LoadFromWebAsync(Link);
-            var data = doc.ScrapScript() ?? throw new ArgumentNullException(nameof(MapGenieMapData));
+            var data = doc.ScrapScript();
+            MapData = data;
             return data;
         }
 
@@ -69,5 +69,8 @@ namespace Interactive_Map.WebScraper
         public string Link { get; } = string.Empty;
         public string ImageUrl { get; } = string.Empty;
         public string Slug { get; } = string.Empty;
+
+        public MapGenieMapData? MapData { get; set; }
+
     }
 }

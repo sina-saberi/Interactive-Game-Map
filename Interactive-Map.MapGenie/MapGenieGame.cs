@@ -5,27 +5,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interactive_Map.WebScraper
+namespace Interactive_Map.MapGenie
 {
     public class MapGenieGame
     {
 
         private static readonly HtmlWeb _web = new();
-        public static async Task<IReadOnlyCollection<MapGenieGame>> GetAll()
+        public static async Task<IReadOnlyCollection<MapGenieGame>?> GetAll()
         {
             var doc = await _web.LoadFromWebAsync(MapGenieConfig.TargetSite);
             var cards = doc.DocumentNode.SelectNodes(MapGenieConfig.GameSelector);
-            return cards.Select(x => new MapGenieGame(x)).ToList();
+            return cards.Select(x => new MapGenieGame(x))?.ToList();
         }
         public static async Task<MapGenieGame> Get(Func<MapGenieGame, bool> select)
         {
             var games = await GetAll();
-            return games.FirstOrDefault(select)
+            return games?.FirstOrDefault(select)
                    ?? throw new Exception("invalid selector");
         }
-        public async Task<IReadOnlyCollection<MapGenieMap>> GetMaps()
+        public async Task<IReadOnlyCollection<MapGenieMap>?> GetMaps()
         {
-            return await MapGenieMap.GetAll(this);
+            Maps = await MapGenieMap.GetAll(this);
+            return Maps?.ToList();
+        }
+
+        public static async Task<IEnumerable<MapGenieGame>> GetAllDeep()
+        {
+            var result = await GetAll();
+            foreach (var game in result)
+            {
+                var maps = await game.GetMaps();
+
+                if (maps is not null)
+                {
+                    foreach (var map in maps)
+                    {
+                        await map.GetMapData();
+                    }
+                }
+
+            }
+
+            return result;
         }
         public async Task<MapGenieMap> GetMap(Func<MapGenieMap, bool> select)
         {
@@ -49,5 +70,6 @@ namespace Interactive_Map.WebScraper
         public string Link { get; } = string.Empty;
         public string ImageUrl { get; } = string.Empty;
         public string Slug { get; } = string.Empty;
+        public IEnumerable<MapGenieMap>? Maps { get; set; }
     }
 }

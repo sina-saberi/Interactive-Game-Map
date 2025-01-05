@@ -10,15 +10,15 @@ namespace Interactive_Map.Application.Services.Tile
 {
     public class GetTileService
     {
-        private readonly ITileRepository _tileRepository;
+        //private readonly ITileRepository _tileRepository;
 
-        public GetTileService(ITileRepository tileRepository)
-        {
-            _tileRepository = tileRepository;
-        }
+        //public GetTileService(ITileRepository tileRepository)
+        //{
+        //    _tileRepository = tileRepository;
+        //}
         public Task<byte[]?> ExecuteAsync(string pattern)
         {
-            return _tileRepository.GetBytesAsync(pattern);
+            throw new NotImplementedException();
         }
     }
 }

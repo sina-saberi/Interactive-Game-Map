@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Interactive_Map.WebScraper.MapGenieData;
+namespace Interactive_Map.MapGenie.MapGenieData;
 
 public class OptionalDictionaryConverter<TKey, TValue> : JsonConverter
 {

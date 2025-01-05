@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Interactive_Map.WebScraper.MapGenieData;
+using Interactive_Map.MapGenie.MapGenieData;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Interactive_Map.WebScraper
+namespace Interactive_Map.MapGenie
 {
     public static partial class Extensions
     {
@@ -55,7 +55,7 @@ namespace Interactive_Map.WebScraper
             return root;
         }
 
-        public static async Task<MapGenieMapData> GetMapData(this Task<MapGenieMap> task)
+        public static async Task<MapGenieMapData?> GetMapData(this Task<MapGenieMap> task)
         {
             var result = await task;
             return await result.GetMapData();

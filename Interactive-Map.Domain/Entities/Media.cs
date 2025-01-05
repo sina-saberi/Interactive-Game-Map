@@ -9,16 +9,14 @@ public class Media : EntityBase<Guid>
     public string MimeType { get; set; } = null!;
     public string Title { get; set; } = null!;
     public string Type { get; set; } = null!;
-    public string Url { get; set; } = null!;
     public Location? Location { get; set; }
 
-    public Media(string fileName, string mimeType, string title, string type, string url)
+    public Media(string fileName, string mimeType, string title, string type)
     {
         FileName = fileName;
         MimeType = mimeType;
         Title = title;
         Type = type;
-        Url = url;
     }
 
     internal Media()

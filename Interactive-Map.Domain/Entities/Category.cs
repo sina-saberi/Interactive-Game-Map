@@ -8,7 +8,7 @@ public class Category : EntityBase<Guid>
 
     public string Title { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; } = null!;
 
     public string Icon { get; set; } = null!;
 
@@ -35,7 +35,7 @@ public class Category : EntityBase<Guid>
 
     //public object Template { get; set; } = null!;
 
-    public Category(string title, string icon, string displayType, string description, IEnumerable<Location>? locations)
+    public Category(string title, string icon, string displayType, string? description, IEnumerable<Location>? locations)
     {
         Title = title;
         Icon = icon;
@@ -44,7 +44,7 @@ public class Category : EntityBase<Guid>
         Locations = locations;
     }
 
-    public Category(string title, string icon, string displayType, string description)
+    public Category(string title, string icon, string displayType, string? description)
     {
         Title = title;
         Icon = icon;

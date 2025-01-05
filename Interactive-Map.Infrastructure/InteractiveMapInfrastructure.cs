@@ -2,6 +2,7 @@
 using Interactive_Map.Infrastructure.Context;
 using Interactive_Map.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,12 @@ namespace Interactive_Map.Infrastructure
     {
         public static void AddInteractiveMapInfrastructure(this IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(InteractiveMapInfrastructure));
             services.AddDbContext<GameMapsDbContext>();
-            services.AddSingleton<IGameRepository, GameRepository>();
+
+
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IMapRepository, MapRepository>();
         }
     }
 }

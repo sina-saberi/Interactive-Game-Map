@@ -5,5 +5,4 @@ namespace Interactive_Map.Application.Interfaces;
 
 public interface IGameRepository : IRepositoryBase<Game, Guid>
 {
-
 }

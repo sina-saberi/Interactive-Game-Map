@@ -2,11 +2,8 @@
 using Interactive_Map.Application.Services.Game;
 using Interactive_Map.Application.Services.Map;
 using Interactive_Map.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Interactive_Map.MapGenie;
+using Interactive_Map.MapGenie.MapGenieData;
 
 namespace Interactive_Map.Application.Mapper
 {
@@ -14,6 +11,23 @@ namespace Interactive_Map.Application.Mapper
     {
         public InteractiveMapApplicationMapperProfile()
         {
+            CreateMap<MapGenieMinAndMax, MinAndMax>();
+            CreateMap<MapGenieBound, Bound>();
+            CreateMap<MapGenieTileSet, TileSet>();
+            CreateMap<MapGenieMapConfig, MapConfig>();
+
+            CreateMap<MapGenieMap, Map>()
+            .ForMember(x => x.Id, _ => Guid.NewGuid())
+            .ForMember(x => x.Name, x => x.MapFrom(c => c.Title))
+            .ForMember(x => x.MapConfig, x => x.Ignore())
+            .ForMember(x => x.Groups, x => x.Ignore());
+
+            CreateMap<MapGenieGame, Game>()
+             .ForMember(x => x.Id, _ => Guid.NewGuid())
+             .ForMember(x => x.Name, x => x.MapFrom(c => c.Title));
+
+
+
             CreateMap<Game, GameListItemDto>()
                 .ReverseMap();
             CreateMap<Map, MapListItemDto>()

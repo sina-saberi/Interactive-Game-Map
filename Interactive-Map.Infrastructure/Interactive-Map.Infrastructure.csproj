@@ -18,7 +18,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Interactive-Map.Application\Interactive-Map.Application.csproj" />
-      <ProjectReference Include="..\Interactive-Map.WebScraper\Interactive-Map.WebScraper.csproj" />
     </ItemGroup>
 
 </Project>

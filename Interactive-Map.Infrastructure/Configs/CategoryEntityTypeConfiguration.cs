@@ -14,6 +14,8 @@ namespace Interactive_Map.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasDefaultValue(Guid.NewGuid());
+
             builder.Property(x => x.Title).IsRequired().HasMaxLength(500);
             builder.Property(x => x.Description).IsRequired(false).HasMaxLength(3000);
             builder.Property(x => x.Icon).IsRequired(false).HasMaxLength(200);

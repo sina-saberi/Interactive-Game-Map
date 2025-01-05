@@ -23,7 +23,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Interactive-Map.Infrastructure\Interactive-Map.Infrastructure.csproj" />
-	  <ProjectReference Include="..\Interactive-Map.WebScraper\Interactive-Map.WebScraper.csproj" />
+	  <ProjectReference Include="..\Interactive-Map.MapGenie\Interactive-Map.MapGenie.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

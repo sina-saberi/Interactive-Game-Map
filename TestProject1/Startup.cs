@@ -1,5 +1,6 @@
 ﻿
 
+using Interactive_Map.Application;
 using Interactive_Map.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ namespace TestProject1
         private IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddInteractiveMapInfrastructure();
+            services.AddInteractiveMapApplication();
             return services.BuildServiceProvider();
         }
 

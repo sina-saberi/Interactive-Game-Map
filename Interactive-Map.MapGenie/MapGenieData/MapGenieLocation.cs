@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
-namespace Interactive_Map.WebScraper.MapGenieData;
+namespace Interactive_Map.MapGenie.MapGenieData;
 
 public class MapGenieLocation
 {
@@ -14,7 +15,8 @@ public class MapGenieLocation
 
     [JsonProperty("title")] public string Title { get; set; }
 
-    [JsonProperty("description")] public object Description { get; set; }
+    [JsonProperty("description")] public string? Description { get; set; }
+    public Guid NewId { get; set; } = Guid.NewGuid();
 
     [JsonProperty("latitude")] public double Latitude { get; set; }
 
@@ -27,4 +29,5 @@ public class MapGenieLocation
     [JsonProperty("tags")] public List<object> Tags { get; set; }
 
     [JsonProperty("media")] public List<MapGenieMedia> Media { get; set; }
+
 }

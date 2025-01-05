@@ -3,10 +3,9 @@ namespace Interactive_Map.Domain.Entities;
 
 public class TileSet
 {
-    public TileSet(int mapId, string name, string path, string extension, string pattern, int minZoom,
+    public TileSet(string name, string path, string extension, string pattern, int minZoom,
         int maxZoom, int order, Dictionary<int, Bound>? bounds)
     {
-        MapId = mapId;
         Name = name;
         Path = path;
         Extension = extension;
@@ -20,10 +19,6 @@ public class TileSet
     public TileSet()
     {
     }
-
-    public int Id { get; set; }
-
-    public int MapId { get; set; }
 
     public string Name { get; set; } = null!;
 

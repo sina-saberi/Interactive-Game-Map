@@ -1,7 +1,6 @@
-﻿using Interactive_Map.Domain.Entities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Interactive_Map.WebScraper.MapGenieData;
+namespace Interactive_Map.MapGenie.MapGenieData;
 
 public class MapGenieMapDto(string name, string slug)
 {

@@ -4,8 +4,19 @@ namespace Interactive_Map.Domain.Entities;
 
 public class MapConfig : EntityBase<Guid>
 {
-    public MapConfig(int initialZoom, double startLat, double startLng, bool overzoom,
-        List<TileSet>? tileSets)
+    public MapConfig(Guid mapId, int initialZoom, double startLat, double startLng, bool overzoom,
+        IEnumerable<TileSet>? tileSets)
+    {
+        MapId = mapId;
+        InitialZoom = initialZoom;
+        StartLat = startLat;
+        StartLng = startLng;
+        Overzoom = overzoom;
+        TileSets = tileSets;
+    }
+
+    public void Update(int initialZoom, double startLat, double startLng, bool overzoom,
+        IEnumerable<TileSet>? tileSets)
     {
         InitialZoom = initialZoom;
         StartLat = startLat;
@@ -13,6 +24,16 @@ public class MapConfig : EntityBase<Guid>
         Overzoom = overzoom;
         TileSets = tileSets;
     }
+
+    public void Update(MapConfig newConfgi)
+    {
+        InitialZoom = newConfgi.InitialZoom;
+        StartLat = newConfgi.StartLat;
+        StartLng = newConfgi.StartLng;
+        Overzoom = newConfgi.Overzoom;
+        TileSets = newConfgi.TileSets;
+    }
+
 
     internal MapConfig()
     {

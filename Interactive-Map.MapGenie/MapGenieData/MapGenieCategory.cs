@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Interactive_Map.WebScraper.MapGenieData;
+namespace Interactive_Map.MapGenie.MapGenieData;
 
 public class MapGenieCategory
 {
@@ -30,7 +30,7 @@ public class MapGenieCategory
 
     [JsonProperty("visible")] public bool Visible { get; set; }
 
-    [JsonProperty("description")] public object Description { get; set; }
+    [JsonProperty("description")] public string? Description { get; set; }
 
     [JsonProperty("premium")] public bool Premium { get; set; }
 }

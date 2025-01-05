@@ -9,5 +9,7 @@ namespace Interactive_Map.Domain.Entities
 {
     public class UserConfig : EntityBase<Guid>
     {
+        public Dictionary<string, string>? SpecialGameLinks { get; set; }
+        public Dictionary<string, string>? SpecialMapLinks { get; set; }
     }
 }

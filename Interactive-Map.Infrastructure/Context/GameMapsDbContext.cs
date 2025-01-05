@@ -1,5 +1,7 @@
 ﻿using Interactive_Map.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +38,8 @@ namespace Interactive_Map.Infrastructure.Context
             }
 
             var dbPath = Path.Combine(appDataPath, "data");
-
             optionsBuilder.UseSqlite($"Data Source={dbPath}");
+
             base.OnConfiguring(optionsBuilder);
         }
     }

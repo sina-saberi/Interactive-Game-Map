@@ -1,13 +1,17 @@
-﻿using Interactive_Map.Application.Interfaces;
+﻿using Interactive_Map.Application.Delegates;
+using Interactive_Map.Application.Interfaces;
 using Interactive_Map.Domain.Base;
 using Interactive_Map.Domain.Entities;
 using Interactive_Map.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Interactive_Map.Infrastructure.Repositories
 {
@@ -26,9 +30,9 @@ namespace Interactive_Map.Infrastructure.Repositories
             return await _entities.FirstAsync(x => x.Id!.Equals(id));
         }
 
-        public virtual async Task<TEntity> Get(Func<TEntity, bool> exp)
+        public virtual async Task<TEntity> Get(Expression<Func<TEntity, bool>> exp)
         {
-            return await _entities.FirstAsync(x => exp.Invoke(x));
+            return await _entities.FirstAsync(exp);
         }
 
         public virtual async Task<IEnumerable<TEntity>> GetAll()
@@ -58,7 +62,7 @@ namespace Interactive_Map.Infrastructure.Repositories
             }
         }
 
-        public virtual async Task Remove(Func<TEntity, bool> exp)
+        public virtual async Task Remove(Expression<Func<TEntity, bool>> exp)
         {
             var entity = await Get(exp);
             if (entity != null)
@@ -80,9 +84,9 @@ namespace Interactive_Map.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public virtual async Task Merge(IEnumerable<TEntity> items, Func<TEntity, TEntity, bool> compareExpression)
+        public virtual async Task Merge(IEnumerable<TEntity> items, Func<TEntity, TEntity, bool> compareExpression, UpdateDelegate<TEntity, TId> updateExpression)
         {
-            var existingItems = _entities.ToList();
+            var existingItems = await _entities.ToListAsync();
 
             var toAdd = items.Where(newItem => existingItems.All(existingItem => !compareExpression(existingItem, newItem))).ToList();
 
@@ -98,11 +102,27 @@ namespace Interactive_Map.Infrastructure.Repositories
                 foreach (var item in toUpdate)
                 {
                     var existingItem = existingItems.First(e => compareExpression(e, item));
-                    _context.Entry(existingItem).CurrentValues.SetValues(item);
+                    updateExpression.Invoke(existingItem, item);
                 }
-
-                await _context.SaveChangesAsync();
+                await UpdateRange(existingItems.Where(e => toUpdate.Any(newItem => compareExpression(e, newItem))));
             }
+        }
+
+        public async Task RemoveRange(IEnumerable<TEntity> entities)
+        {
+            _entities.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveRange(Expression<Func<TEntity, bool>> exp)
+        {
+            var items = await GetAll(exp);
+            await RemoveRange(items);
+        }
+
+        public async Task<IEnumerable<TEntity>> GetAll(Expression<Func<TEntity, bool>> exp)
+        {
+            return await _entities.Where(exp).ToListAsync();
         }
     }
 }

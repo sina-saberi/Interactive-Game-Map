@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Interactive_Map.WebScraper
+namespace Interactive_Map.MapGenie
 {
     public static class MapGenieConfig
     {
