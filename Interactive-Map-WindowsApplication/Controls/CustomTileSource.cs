@@ -19,13 +19,14 @@ namespace Interactive_Map_WindowsApplication.Controls
         private readonly TileService? _tileService;
         private readonly ITileSchema _tileSchema;
         private readonly string _pattern;
+        private readonly Func<string, Task<byte[]?>> _funct;
 
-        public CustomTileSource(ITileSchema tileSchema, string pattern, string name, TileService? tileService)
+        public CustomTileSource(ITileSchema tileSchema, string pattern, string name, Func<string, Task<byte[]?>> funct)
         {
             _tileSchema = tileSchema;
             _pattern = pattern;
             _name = name;
-            _tileService = tileService;
+            _funct = funct;
         }
 
         public ITileSchema Schema => _tileSchema;
@@ -41,8 +42,7 @@ namespace Interactive_Map_WindowsApplication.Controls
               .Replace("{x}", tileInfo.Index.Col.ToString())
               .Replace("{y}", tileInfo.Index.Row.ToString());
 
-            if (_tileService is not null) return await _tileService.GetTileAsync(pattern);
-            return null;
+            return await _funct.Invoke(pattern);
         }
     }
 }

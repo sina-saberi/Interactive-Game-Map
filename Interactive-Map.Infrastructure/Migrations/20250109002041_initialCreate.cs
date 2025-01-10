@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Interactive_Map.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                 name: "Config",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    SpecialGameLinks = table.Column<string>(type: "TEXT", nullable: true),
+                    SpecialMapLinks = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,7 +30,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
-                    Slug = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false)
+                    Slug = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    Synced = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LastSynced = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -42,7 +46,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     GameId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
-                    Slug = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false)
+                    Slug = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    Synced = table.Column<bool>(type: "INTEGER", nullable: false),
+                    LastSynced = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -64,7 +70,8 @@ namespace Interactive_Map.Infrastructure.Migrations
                     Title = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
                     Order = table.Column<int>(type: "INTEGER", nullable: false),
                     Color = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Expandable = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Expandable = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RefrenceId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,14 +123,15 @@ namespace Interactive_Map.Infrastructure.Migrations
                     IgnEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
                     IgnVisible = table.Column<bool>(type: "INTEGER", nullable: false),
                     Visible = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Premium = table.Column<bool>(type: "INTEGER", nullable: false)
+                    Premium = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RefrenceId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Categories_Groups_Id",
-                        column: x => x.Id,
+                        name: "FK_Categories_Groups_GroupId",
+                        column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -134,12 +142,13 @@ namespace Interactive_Map.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", maxLength: 3000, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 2147483647, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 2147483647, nullable: true),
                     Latitude = table.Column<double>(type: "REAL", nullable: false),
                     Longitude = table.Column<double>(type: "REAL", nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0)
+                    Type = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0),
+                    RefrenceId = table.Column<string>(type: "TEXT", nullable: true),
+                    CategoryId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -148,8 +157,7 @@ namespace Interactive_Map.Infrastructure.Migrations
                         name: "FK_Locations_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -161,8 +169,7 @@ namespace Interactive_Map.Infrastructure.Migrations
                     FileName = table.Column<string>(type: "TEXT", nullable: false),
                     MimeType = table.Column<string>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Type = table.Column<string>(type: "TEXT", nullable: false),
-                    Url = table.Column<string>(type: "TEXT", nullable: false)
+                    Type = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,6 +202,11 @@ namespace Interactive_Map.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_GroupId",
+                table: "Categories",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_MapId",

@@ -20,6 +20,7 @@ namespace Interactive_Map.Infrastructure.Migrations
             modelBuilder.Entity("Interactive_Map.Domain.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -55,6 +56,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                     b.Property<bool>("Premium")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("RefrenceId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -64,6 +68,8 @@ namespace Interactive_Map.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Categories");
                 });
@@ -115,6 +121,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("RefrenceId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -133,11 +142,10 @@ namespace Interactive_Map.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(2147483647)
                         .HasColumnType("TEXT");
 
@@ -147,7 +155,7 @@ namespace Interactive_Map.Infrastructure.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("REAL");
 
-                    b.Property<Guid>("RefrenceId")
+                    b.Property<string>("RefrenceId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -176,6 +184,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                     b.Property<Guid>("GameId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("LastSynced")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -185,6 +196,9 @@ namespace Interactive_Map.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Synced")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -309,7 +323,7 @@ namespace Interactive_Map.Infrastructure.Migrations
                 {
                     b.HasOne("Interactive_Map.Domain.Entities.Group", "Group")
                         .WithMany("Categories")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -331,9 +345,7 @@ namespace Interactive_Map.Infrastructure.Migrations
                 {
                     b.HasOne("Interactive_Map.Domain.Entities.Category", "Category")
                         .WithMany("Locations")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
                 });
@@ -363,7 +375,7 @@ namespace Interactive_Map.Infrastructure.Migrations
             modelBuilder.Entity("Interactive_Map.Domain.Entities.Media", b =>
                 {
                     b.HasOne("Interactive_Map.Domain.Entities.Location", "Location")
-                        .WithMany("Media")
+                        .WithMany("Medias")
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -399,7 +411,7 @@ namespace Interactive_Map.Infrastructure.Migrations
 
             modelBuilder.Entity("Interactive_Map.Domain.Entities.Location", b =>
                 {
-                    b.Navigation("Media");
+                    b.Navigation("Medias");
 
                     b.Navigation("UserLocation");
                 });

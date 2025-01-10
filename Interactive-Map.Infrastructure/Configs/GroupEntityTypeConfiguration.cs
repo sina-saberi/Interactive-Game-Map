@@ -16,7 +16,11 @@ namespace Interactive_Map.Infrastructure.Configs
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Title).IsRequired().HasMaxLength(500);
             builder.Property(x => x.Color).HasMaxLength(100);
-            builder.HasMany(x => x.Categories).WithOne(x => x.Group).HasForeignKey(x => x.Id);
+
+            builder.HasMany(x => x.Categories).WithOne(x => x.Group).HasForeignKey(x => x.GroupId);
+
+            builder.Navigation(x => x.Categories)
+                   .UsePropertyAccessMode(PropertyAccessMode.Field).HasField("_categories");
         }
     }
 }

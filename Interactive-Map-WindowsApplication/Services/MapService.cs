@@ -19,11 +19,11 @@ namespace Interactive_Map_WindowsApplication.Services
             return mapper.Map<List<MapListItemDtoViewModel>>(maps);
         }
 
-        public async Task<MapDto> GetMap(string gameSlug, string MapSlug)
+        public async Task<MapDataDtoViewModel> GetMap(string gameSlug, string MapSlug)
         {
             var result = await getMapService.ExecuteAsync(gameSlug, MapSlug);
 
-            return result;
+            return mapper.Map<MapDataDtoViewModel>(result);
         }
     }
 }

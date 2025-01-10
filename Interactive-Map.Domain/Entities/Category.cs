@@ -1,9 +1,11 @@
 ﻿using Interactive_Map.Domain.Base;
+using Interactive_Map.Domain.Extensions;
 
 namespace Interactive_Map.Domain.Entities;
 
 public class Category : EntityBase<Guid>
 {
+    private List<Location> _locations = [];
     public Guid GroupId { get; set; }
 
     public string Title { get; set; } = null!;
@@ -28,29 +30,64 @@ public class Category : EntityBase<Guid>
 
     public bool Premium { get; set; }
 
-    public IEnumerable<Location>? Locations { get; set; }
+    public string? RefrenceId { get; set; }
+
     public Group? Group { get; set; }
 
-    //public object Info { get; set; } = null!;
+    public IEnumerable<Location> Locations => _locations;
 
-    //public object Template { get; set; } = null!;
-
-    public Category(string title, string icon, string displayType, string? description, IEnumerable<Location>? locations)
+    public Category()
     {
-        Title = title;
-        Icon = icon;
-        DisplayType = displayType;
-        Description = description;
-        Locations = locations;
+
     }
 
-    public Category(string title, string icon, string displayType, string? description)
+    public Category AddLocation(Location location)
     {
-        Title = title;
-        Icon = icon;
-        DisplayType = displayType;
-        Description = description;
+        _locations.Add(location);
+        return this;
     }
 
-    internal Category() { }
+    public Category(Guid groupId, string title, string? description, string icon, int order, bool hasHeatmap,
+        bool featuresEnabled, string displayType, bool ignEnabled, bool ignVisible, bool visible, bool premium, string? refrenceId)
+    {
+        GroupId = groupId;
+        Title = title;
+        Description = description;
+        Icon = icon;
+        Order = order;
+        HasHeatmap = hasHeatmap;
+        FeaturesEnabled = featuresEnabled;
+        DisplayType = displayType;
+        IgnEnabled = ignEnabled;
+        IgnVisible = ignVisible;
+        Visible = visible;
+        Premium = premium;
+        RefrenceId = refrenceId;
+    }
+
+    public Category Update(string title, string? description, string icon, int order, bool hasHeatmap, bool featuresEnabled, string displayType, bool ignEnabled,
+        bool ignVisible, bool visible, bool premium, string? refrenceId)
+    {
+        Title = title;
+        Description = description;
+        Icon = icon;
+        Order = order;
+        HasHeatmap = hasHeatmap;
+        FeaturesEnabled = featuresEnabled;
+        DisplayType = displayType;
+        IgnEnabled = ignEnabled;
+        IgnVisible = ignVisible;
+        Visible = visible;
+        Premium = premium;
+        RefrenceId = refrenceId;
+        return this;
+    }
+
+
+    public Category Update(Category category)
+        => Update(
+            category.Title, category.Description, category.Icon, category.Order,
+            category.HasHeatmap, category.FeaturesEnabled, category.DisplayType,
+            category.IgnEnabled, category.IgnVisible, category.Visible, category.Premium, category.RefrenceId
+        );
 }

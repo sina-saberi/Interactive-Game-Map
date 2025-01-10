@@ -17,6 +17,8 @@ namespace Interactive_Map.Infrastructure.Configs
             builder.Property(x => x.Name).IsRequired().HasMaxLength(500);
             builder.Property(x => x.Slug).IsRequired().HasMaxLength(500);
             builder.HasMany(x => x.Maps).WithOne(x => x.Game).HasForeignKey(x => x.GameId);
+            builder.Navigation(x => x.Maps)
+             .UsePropertyAccessMode(PropertyAccessMode.Field).HasField("_map");
         }
     }
 }

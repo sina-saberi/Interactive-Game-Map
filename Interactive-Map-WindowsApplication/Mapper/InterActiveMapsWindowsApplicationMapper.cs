@@ -14,6 +14,12 @@ namespace Interactive_Map_WindowsApplication.Mapper
     {
         public InterActiveMapsWindowsApplicationMapper()
         {
+            CreateMap<MapConfigDto, MapConfigDtoViewModel>().ReverseMap();
+            CreateMap<CategoryDto, CategoryDtoViewModel>().ReverseMap();
+            CreateMap<GroupDto, GroupDtoViewModel>().ReverseMap();
+            CreateMap<LocationDto, LocationDtoViewModel>().ReverseMap();
+            CreateMap<MapDataDto, MapDataDtoViewModel>().ReverseMap();
+
             CreateMap<GameListItemDto, GameListItemDtoViewModel>()
                 .ReverseMap();
             CreateMap<MapListItemDto, MapListItemDtoViewModel>()

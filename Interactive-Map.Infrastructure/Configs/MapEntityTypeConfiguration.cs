@@ -18,6 +18,8 @@ namespace Interactive_Map.Infrastructure.Configs
             builder.Property(x => x.Slug).IsRequired().HasMaxLength(500);
 
             builder.HasMany(x => x.Groups).WithOne(x => x.Map).HasForeignKey(x => x.MapId);
+            builder.Navigation(x => x.Groups).UsePropertyAccessMode(PropertyAccessMode.Field).HasField("_groups");
+
             builder.HasOne(x => x.MapConfig).WithOne(x => x.Map).HasForeignKey<MapConfig>(x => x.MapId);
         }
     }

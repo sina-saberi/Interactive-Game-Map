@@ -15,15 +15,17 @@ namespace Interactive_Map.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Location> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasDefaultValue(Guid.NewGuid());
 
-            builder.Property(x => x.Title).IsRequired().HasMaxLength(3000);
-            builder.Property(x => x.Description).IsRequired().HasMaxLength(int.MaxValue);
+            builder.Property(x => x.Title).IsRequired(true).HasMaxLength(3000);
+            builder.Property(x => x.Description).IsRequired(false).HasMaxLength(int.MaxValue);
             builder.Property(x => x.Latitude).IsRequired();
             builder.Property(x => x.Longitude).IsRequired();
             builder.Property(x => x.Type).IsRequired().HasDefaultValue(LocationType.Server);
 
-            builder.HasMany(x => x.Media).WithOne(x => x.Location).HasForeignKey(x => x.LocationId);
+
+            builder.HasMany(x => x.Medias).WithOne(x => x.Location).HasForeignKey(x => x.LocationId);
+            builder.Navigation(x => x.Medias).UsePropertyAccessMode(PropertyAccessMode.Field).HasField("_medias");
+
             builder.HasOne(x => x.UserLocation).WithOne(x => x.Location).HasForeignKey<UserLocation>(x => x.LocationId);
         }
     }

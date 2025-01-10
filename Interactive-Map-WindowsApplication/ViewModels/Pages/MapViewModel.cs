@@ -36,11 +36,17 @@ namespace Interactive_Map_WindowsApplication.ViewModels.Pages
         public ICommand? Command { get; set; }
 
 
+        public async Task<byte[]?> OnGetTile(string pattern)
+        {
+            if (TileService is null) return null;
+            return await TileService.GetTileAsync(pattern);
+        }
+
         public async Task GetData()
         {
             if (MapService is null) return;
             var map = await MapService.GetMap(_gameSlug, _mapSlug);
-            MapControl = new GameMapsMapControl(map, TileService);
+            MapControl = new GameMapsMapControl(map.Config, map.Locations, OnGetTile);
             OnPropertyChanged(nameof(MapControl));
         }
 

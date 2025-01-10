@@ -16,7 +16,6 @@ public class MapGenieLocation
     [JsonProperty("title")] public string Title { get; set; }
 
     [JsonProperty("description")] public string? Description { get; set; }
-    public Guid NewId { get; set; } = Guid.NewGuid();
 
     [JsonProperty("latitude")] public double Latitude { get; set; }
 

@@ -4,6 +4,7 @@ using Interactive_Map.Application.Services.Map;
 using Interactive_Map.Domain.Entities;
 using Interactive_Map_WindowsApplication.Controls;
 using Interactive_Map_WindowsApplication.Services;
+using Interactive_Map_WindowsApplication.ViewModels.Dtos;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
@@ -27,27 +28,30 @@ namespace Interactive_Map_WindowsApplication.Controls
 {
     public class GameMapsMapControl : MapControl
     {
-        private readonly MapDto _mapDto;
-        private readonly TileService? _tileService;
+        private readonly MapConfigDtoViewModel _mapConfig;
+        private readonly IEnumerable<LocationDtoViewModel> _locations;
+        private readonly Func<string, Task<byte[]?>> _funct;
 
         public int CurrentTileSet { get; set; }
-        public GameMapsMapControl(MapDto mapDto, TileService? tileService)
+        public GameMapsMapControl(MapConfigDtoViewModel mapConfig, IEnumerable<LocationDtoViewModel> locations, Func<string, Task<byte[]?>> funct)
         {
-            _mapDto = mapDto;
-            _tileService = tileService;
+            _mapConfig = mapConfig;
+            _locations = locations;
+            _funct = funct;
             Init();
         }
         private void Init()
         {
-            var tilesets = _mapDto.MapConfig?.TileSets?.ToList();
+            var tilesets = _mapConfig.TileSets?.ToList();
             var tileSet = tilesets?[CurrentTileSet];
             if (tileSet is null) return;
             Map.Layers.Add(GetTileLayer(tileSet));
-            Map.Navigator.CenterOnAndZoomTo(GetCenter(_mapDto.MapConfig), GetDefautlZoom(Map, _mapDto.MapConfig));
-            Map.Layers.Add(AddInteractiveMarker(_mapDto));
+            Map.Navigator.CenterOnAndZoomTo(GetCenter(_mapConfig), GetDefautlZoom(Map, _mapConfig));
+            Map.Layers.Add(AddInteractiveMarker());
             Logger.LogDelegate += Loging;
         }
-        private static MemoryLayer AddInteractiveMarker(MapDto mapDto)
+
+        private MemoryLayer AddInteractiveMarker()
         {
             var features = new List<IFeature>();
 
@@ -55,38 +59,25 @@ namespace Interactive_Map_WindowsApplication.Controls
             var sphericalMercator = ProjectedCoordinateSystem.WebMercator;
             var transformation = new CoordinateTransformationFactory().CreateFromCoordinateSystems(wgs84, sphericalMercator);
 
-            if (mapDto.Groups is not null)
+            foreach (var location in _locations)
             {
-                foreach (var group in mapDto.Groups)
+                var mercatorCoords = transformation.MathTransform.Transform(new double[] { location.Longitude, location.Latitude });
+                var markerPoint = new NetTopologySuite.Geometries.Point(new Coordinate(mercatorCoords[0], mercatorCoords[1]));
+                var feature = new Mapsui.Nts.GeometryFeature
                 {
-                    if (group.Categories is null) continue;
+                    Geometry = markerPoint
+                };
 
-                    foreach (var category in group.Categories)
-                    {
-                        if (category.Locations is null) continue;
+                feature["Name"] = location.Title;
+                feature.Styles.Add(new SymbolStyle
+                {
+                    Fill = new Brush(Color.Red),
+                    Outline = new Pen { Color = Color.Black, Width = 2 },
+                    SymbolScale = 0.5,
+                    Opacity = 0.8f
+                });
 
-                        foreach (var location in category.Locations)
-                        {
-                            var mercatorCoords = transformation.MathTransform.Transform(new double[] { location.Longitude, location.Latitude });
-                            var markerPoint = new NetTopologySuite.Geometries.Point(new Coordinate(mercatorCoords[0], mercatorCoords[1]));
-                            var feature = new Mapsui.Nts.GeometryFeature
-                            {
-                                Geometry = markerPoint
-                            };
-
-                            feature["Name"] = location.Title;
-                            feature.Styles.Add(new SymbolStyle
-                            {
-                                Fill = new Brush(Color.Red),
-                                Outline = new Pen { Color = Color.Black, Width = 2 },
-                                SymbolScale = 0.5,
-                                Opacity = 0.8f
-                            });
-
-                            features.Add(feature);
-                        }
-                    }
-                }
+                features.Add(feature);
             }
             return new MemoryLayer
             {
@@ -98,11 +89,11 @@ namespace Interactive_Map_WindowsApplication.Controls
         {
             Console.WriteLine(arg2);
         }
-        private static double GetDefautlZoom(Mapsui.Map map, MapConfig? config)
+        private static double GetDefautlZoom(Mapsui.Map map, MapConfigDtoViewModel? config)
         {
             return map.Navigator.Resolutions[config?.InitialZoom ?? 9];
         }
-        private static MPoint GetCenter(MapConfig? config)
+        private static MPoint GetCenter(MapConfigDtoViewModel? config)
         {
             if (config is null) return new MPoint();
             var center = new MPoint(config.StartLng, config.StartLat);
@@ -115,7 +106,7 @@ namespace Interactive_Map_WindowsApplication.Controls
             new GlobalSphericalMercator(),
                 tileSet.Pattern,
                 name: "CustomTiles",
-                _tileService
+                _funct
             );
 
             var tileLayer = new TileLayer(tileSource);
@@ -123,26 +114,3 @@ namespace Interactive_Map_WindowsApplication.Controls
         }
     }
 }
-
-//public static readonly DependencyProperty MapProperty =
-//      DependencyProperty.Register(
-//         nameof(MapDto),
-//         typeof(MapDto),
-//         typeof(GameMapsMapControl),
-//         new PropertyMetadata(null, OnMapChanged));
-
-//public MapDto MapDto
-//{
-//    get => (MapDto)GetValue(MapProperty);
-//    set => SetValue(MapProperty, value);
-//}
-//public int CurrentTileSet { get; set; } = 0;
-
-//private static void OnMapChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-//{
-//    if (d is GameMapsMapControl control && e.NewValue is MapDto newMap)
-//    {
-//        control.MapDto = newMap;
-//        control.Init();
-//    }
-//}

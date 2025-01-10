@@ -1,38 +1,28 @@
 ﻿using AutoMapper;
 using Interactive_Map.Application.Interfaces;
-using Interactive_Map.MapGenie;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Interactive_Map.Application.Services.MapGenie;
+using Microsoft.EntityFrameworkCore;
 
 namespace Interactive_Map.Application.Services.Game
 {
     public class GetGameListService
     {
-        private readonly IGameRepository _repository;
+        private readonly IGameMapsDbContext _context;
         private readonly IMapper _mapper;
+        private readonly MapGenieSynchronizeService _synchronizeService;
 
-        public GetGameListService(IGameRepository repository, IMapper mapper)
+        public GetGameListService(IGameMapsDbContext context, IMapper mapper)
         {
-            _repository = repository;
+            _context = context;
             _mapper = mapper;
+            _synchronizeService = new MapGenieSynchronizeService(mapper, context);
         }
 
-        private async Task SyncGames()
+        public async Task<IEnumerable<GameListItemDto>> ExecuteAsync()
         {
-            var mapGenieGames = await MapGenieGame.GetAll();
-            var games = _mapper.Map<IEnumerable<Domain.Entities.Game>>(mapGenieGames);
-            await _repository.Merge(games, (a, b) => a.Slug == b.Slug, (source, target) =>
-                source.Update(target.Name, target.Slug, true, DateTime.Now));
-        }
-
-        public async Task<IList<GameListItemDto>> ExecuteAsync()
-        {
-            await SyncGames();
-            var response = await _repository.GetAll();
-            return _mapper.Map<IList<GameListItemDto>>(response);
+            var games = await _context.Games.ToListAsync();
+            await _synchronizeService.SyncGames(games);
+            return _mapper.Map<IEnumerable<GameListItemDto>>(games);
         }
     }
 }

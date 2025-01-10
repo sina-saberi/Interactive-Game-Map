@@ -14,14 +14,15 @@ namespace Interactive_Map.Infrastructure.Configs
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasDefaultValue(Guid.NewGuid());
 
-            builder.Property(x => x.Title).IsRequired().HasMaxLength(500);
+            builder.Property(x => x.Title).IsRequired(true).HasMaxLength(500);
             builder.Property(x => x.Description).IsRequired(false).HasMaxLength(3000);
             builder.Property(x => x.Icon).IsRequired(false).HasMaxLength(200);
             builder.Property(x => x.DisplayType).IsRequired(false).HasMaxLength(500);
 
+
             builder.HasMany(x => x.Locations).WithOne(x => x.Category).HasForeignKey(x => x.CategoryId);
+            builder.Navigation(x => x.Locations).UsePropertyAccessMode(PropertyAccessMode.Field).HasField("_locations");
         }
     }
 }

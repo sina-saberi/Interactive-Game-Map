@@ -19,6 +19,18 @@ public class Media : EntityBase<Guid>
         Type = type;
     }
 
+    public Media Update(string fileName, string mimeType, string title, string type)
+    {
+        FileName = fileName;
+        MimeType = mimeType;
+        Title = title;
+        Type = type;
+
+        return this;
+    }
+
+    public Media Update(Media media) => Update(media.FileName, media.MimeType, media.Title, media.Type);
+
     internal Media()
     {
     }
